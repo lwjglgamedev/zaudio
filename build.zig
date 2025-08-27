@@ -4,17 +4,17 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
     const target = b.standardTargetOptions(.{});
 
-    _ = b.addModule("root", .{
+    const root_module = b.createModule(.{
         .root_source_file = b.path("src/zaudio.zig"),
-    });
-
-    const miniaudio = b.addStaticLibrary(.{
-        .name = "miniaudio",
         .target = target,
         .optimize = optimize,
     });
 
-    b.installArtifact(miniaudio);
+    const miniaudio = b.addLibrary(.{
+        .name = "miniaudio",
+        .linkage = .static,
+        .root_module = root_module,
+    });
 
     miniaudio.addIncludePath(b.path("libs/miniaudio"));
     miniaudio.linkLibC();
@@ -58,11 +58,8 @@ pub fn build(b: *std.Build) void {
 
     const tests = b.addTest(.{
         .name = "zaudio-tests",
-        .root_source_file = b.path("src/zaudio.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = root_module,
     });
-    b.installArtifact(tests);
 
     tests.linkLibrary(miniaudio);
 
