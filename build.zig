@@ -13,8 +13,12 @@ pub fn build(b: *std.Build) void {
     const miniaudio = b.addLibrary(.{
         .name = "miniaudio",
         .linkage = .static,
-        .root_module = root_module,
+        .root_module = b.addModule("miniaudio", .{
+            .target = target,
+            .optimize = optimize,
+        }),
     });
+    b.installArtifact(miniaudio);
 
     miniaudio.addIncludePath(b.path("libs/miniaudio"));
     miniaudio.linkLibC();
