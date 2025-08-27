@@ -4,7 +4,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
     const target = b.standardTargetOptions(.{});
 
-    const root_module = b.createModule(.{
+    const root_module = b.addModule("root", .{
         .root_source_file = b.path("src/zaudio.zig"),
         .target = target,
         .optimize = optimize,
